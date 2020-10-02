@@ -14,7 +14,7 @@ mvn clean package
 command
 3. then enter the
 java --module-path "$PATH_TO_FX" --add-modules javafx.controls -jar target/javafxproject-0.0.1-SNAPSHOT-jar-with-dependencies.jar
-command
+command (for Windows)
 
 
 Description:
