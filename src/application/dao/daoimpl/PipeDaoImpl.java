@@ -18,162 +18,168 @@ import application.utilclasses.Point;
 
 public class PipeDaoImpl implements PipeDao {
 
-    private static final Logger logger = LoggerFactory.getLogger(PipeDaoImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(PipeDaoImpl.class);
 
-    public PipeDaoImpl() {
-    }
+	public PipeDaoImpl() {
+	}
 
-    @SuppressWarnings({ "unused", "unchecked" })
+	@SuppressWarnings({ "unused", "unchecked" })
 	@Override
-    public List<Pipe> getAllPipesAsList() {
-        List<Pipe> pipeImplList = null;
+	public List<Pipe> getAllPipesAsList() {
+		List<Pipe> pipeImplList = null;
 
-        try (Session session = HibernateConnectionConfig.getSessionFactory().getCurrentSession()) {
-            Transaction transaction = session.beginTransaction();
-            pipeImplList = (List<Pipe>) session.createQuery("FROM PIPE").list();
-        } catch (Exception e) {
-            logger.error("something went wrong upon global search", e);
-            throw new IllegalArgumentException("something went wrong upon global search", e);
-        }
-        return pipeImplList;
-    }
+		try (Session session = HibernateConnectionConfig.getSessionFactory().getCurrentSession()) {
+			Transaction transaction = session.beginTransaction();
+			pipeImplList = (List<Pipe>) session.createQuery("FROM PIPE").list();
+		} catch (Exception e) {
+			logger.error("something went wrong upon global search", e);
+			throw new IllegalArgumentException("something went wrong upon global search", e);
+		}
+		return pipeImplList;
+	}
 
-    @Override
-    public void create(Pipe pipe) {
+	@Override
+	public void create(Pipe pipe) {
 
-        assignIdIfNull(pipe);
-        Transaction transaction = null;
+		assignIdIfNull(pipe);
+		
+		Transaction transaction = null;
 
-        try (Session session = HibernateConnectionConfig.getSessionFactory().getCurrentSession()) {
-            transaction = session.beginTransaction();
-            session.save(pipe);
-            transaction.commit();
+		try (Session session = HibernateConnectionConfig.getSessionFactory().getCurrentSession()) {
 
-        } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
-            logger.error("something went wrong with creating", e);
-            throw new IllegalArgumentException("something went wrong upon creating", e);
-        }
-    }
+			transaction = session.beginTransaction();
+			session.save(pipe);
+			transaction.commit();
 
-    @SuppressWarnings({ "unused", "unchecked" })
-    @Override
-    public Integer[] getArrayOfUniqueStartPoints() {
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			logger.error("something went wrong with creating", e);
+			throw new IllegalArgumentException("something went wrong upon creating", e);
+		}
+	}
 
-        try (Session session = HibernateConnectionConfig.getSessionFactory().getCurrentSession()) {
-            Transaction transaction = session.beginTransaction();
+	@SuppressWarnings({ "unused", "unchecked" })
+	@Override
+	public Integer[] getArrayOfUniqueStartPoints() {
 
-            List<Integer> uniqueStartPoints = (List<Integer>) session.createQuery(
-                    "select distinct startPoint FROM PIPE").list();
+		try (Session session = HibernateConnectionConfig.getSessionFactory().getCurrentSession()) {
+			Transaction transaction = session.beginTransaction();
 
-            Object[] tempArray = uniqueStartPoints.toArray();
-            Integer[] uniqueStartPointsArray = createIntArrayFrom(tempArray);
+			List<Integer> uniqueStartPoints = (List<Integer>) session
+					.createQuery("select distinct startPoint FROM PIPE").list();
 
-            return uniqueStartPointsArray;
+			Object[] tempArray = uniqueStartPoints.toArray();
+			Integer[] uniqueStartPointsArray = createIntArrayFrom(tempArray);
 
-        } catch (Exception e) {
-            logger.error("something went wrong upon getArrayOfUniqueStartPoints method calling", e);
-            throw new IllegalArgumentException("something went wrong upon getArrayOfUniqueStartPoints method calling", e);
-        }
-    }
+			return uniqueStartPointsArray;
 
-    @SuppressWarnings({ "unused", "unchecked" })
-    @Override
-    public Integer[] getArrayOfUniqueEndPoints() {
+		} catch (Exception e) {
+			logger.error("something went wrong upon getArrayOfUniqueStartPoints method calling", e);
+			throw new IllegalArgumentException("something went wrong upon getArrayOfUniqueStartPoints method calling",
+					e);
+		}
+	}
 
-        try (Session session = HibernateConnectionConfig.getSessionFactory().getCurrentSession()) {
-            Transaction transaction = session.beginTransaction();
+	@SuppressWarnings({ "unused", "unchecked" })
+	@Override
+	public Integer[] getArrayOfUniqueEndPoints() {
 
-            List<Integer> uniqueEndPointList = (List<Integer>) session.createQuery(
-                    "select distinct endPoint FROM PIPE").list();
+		try (Session session = HibernateConnectionConfig.getSessionFactory().getCurrentSession()) {
+			Transaction transaction = session.beginTransaction();
 
-            Object[] tempArray = uniqueEndPointList.toArray();
-            Integer[] uniqueEndPointArray = createIntArrayFrom(tempArray);
+			List<Integer> uniqueEndPointList = (List<Integer>) session.createQuery("select distinct endPoint FROM PIPE")
+					.list();
 
-            return uniqueEndPointArray;
+			Object[] tempArray = uniqueEndPointList.toArray();
+			Integer[] uniqueEndPointArray = createIntArrayFrom(tempArray);
 
-        } catch (Exception e) {
-            logger.error("something went wrong upon getArrayOfUniqueEndPoints method calling", e);
-            throw new IllegalArgumentException("something went wrong upon getArrayOfUniqueEndPoints method calling", e);
-        }
-    }
-  
-    @Override
-    public Set<Point> getAllPointsAsSet() {
+			return uniqueEndPointArray;
 
-        Set<Point> pointSet = new HashSet<>();
-        Set<Integer> tempSet = new HashSet<>();
+		} catch (Exception e) {
+			logger.error("something went wrong upon getArrayOfUniqueEndPoints method calling", e);
+			throw new IllegalArgumentException("something went wrong upon getArrayOfUniqueEndPoints method calling", e);
+		}
+	}
 
-        Integer[] startPoints = getArrayOfUniqueStartPoints();
-        Integer[] endPoints = getArrayOfUniqueEndPoints();
+	@Override
+	public Set<Point> getAllPointsAsSet() {
 
-        tempSet.addAll(Arrays.asList(startPoints.clone()));
-        tempSet.addAll(Arrays.asList(endPoints.clone()));
+		Set<Point> pointSet = new HashSet<>();
+		Set<Integer> tempSet = new HashSet<>();
 
-        for (int pointName : tempSet) {
+		Integer[] startPoints = getArrayOfUniqueStartPoints();
+		Integer[] endPoints = getArrayOfUniqueEndPoints();
 
-            Point point = new Point();
-            point.setPointName(pointName);
+		tempSet.addAll(Arrays.asList(startPoints.clone()));
+		tempSet.addAll(Arrays.asList(endPoints.clone()));
 
-            pointSet.add(point);
-        }
+		for (int pointName : tempSet) {
 
-        return pointSet;
-    }
+			Point point = new Point();
+			point.setPointName(pointName);
 
-    @Override
-    public List<Point> getAllUniquePointsAsList() {
+			pointSet.add(point);
+		}
 
-        return new ArrayList<>(getAllPointsAsSet());
-    }
+		return pointSet;
+	}
 
-    @Override
-    public List<Pipe> getPipesWhichStartFromPoint(int point) {
-        List<Pipe> pipes = getAllPipesAsList();
-        List<Pipe> pipesWhichStartFromOnPoint = new ArrayList<>();
-        for (Pipe pipe : pipes) {
-            if (pipe.getStartPoint() == point) {
-                pipesWhichStartFromOnPoint.add(pipe);
-            }
-        }
-        return pipesWhichStartFromOnPoint;
-    }
+	@Override
+	public List<Point> getAllUniquePointsAsList() {
 
+		return new ArrayList<>(getAllPointsAsSet());
+	}
 
-    private void assignIdIfNull(Pipe pipe) {
+	@Override
+	public List<Pipe> getAllConnectedPipesTo(int point) {
+		List<Pipe> pipes = getAllPipesAsList();
+		List<Pipe> connectedPipesToPoint = new ArrayList<>();
+		for (Pipe pipe : pipes) {
+			if (pipe.getStartPoint() == point) {
+				connectedPipesToPoint.add(pipe);
+			}
+			//
+			if (pipe.getEndPoint() == point) {
+				connectedPipesToPoint.add(pipe);
+			}
+			//
+		}
+		return connectedPipesToPoint;
+	}
 
-        if (pipe.getId() == null) {
+	private void assignIdIfNull(Pipe pipe) {
 
-            try (Session session = HibernateConnectionConfig.getSessionFactory().getCurrentSession()) {
-                @SuppressWarnings("unused")
+		if (pipe.getId() == null) {
+
+			try (Session session = HibernateConnectionConfig.getSessionFactory().getCurrentSession()) {
+				@SuppressWarnings("unused")
 				Transaction transaction = session.beginTransaction();
 
-                Long maxId = (Long) session.createQuery("select max(id) from PIPE").uniqueResult();
+				Long maxId = (Long) session.createQuery("select max(id) from PIPE").uniqueResult();
 
-                if (maxId == null) {
-                    maxId = 0L;
-                }
+				if (maxId == null) {
+					maxId = 0L;
+				}
 
-                pipe.setId(maxId + 1L);
+				pipe.setId(maxId + 1L);
 
+			} catch (Exception e) {
+				logger.error("something went wrong upon Id assigning", e);
+				throw new IllegalArgumentException("something went wrong upon Id assigning", e);
+			}
+		}
+	}
 
-            } catch (Exception e) {
-                logger.error("something went wrong upon Id assigning", e);
-                throw new IllegalArgumentException("something went wrong upon Id assigning", e);
-            }
-        }
-    }
+	private Integer[] createIntArrayFrom(Object[] o) {
 
-    private Integer[] createIntArrayFrom(Object[] o) {
+		Integer[] result = new Integer[o.length];
 
-        Integer[] result = new Integer[o.length];
+		for (int j = 0; j < o.length; j++) {
+			result[j] = (int) o[j];
+		}
 
-        for (int j = 0; j < o.length; j++) {
-            result[j] = (int) o[j];
-        }
-
-        return result;
-    }
+		return result;
+	}
 }

@@ -13,15 +13,16 @@ public class ResultFileWriter {
 
 	private File resultFile;
 
-	public File createResultFile(String fileContent) {
+	public void createResultFile(String fileContent) {
 
 		String newFileName = "resultFile.csv";
 
-		return createResultFile(fileContent, newFileName);
+//		return createResultFile(fileContent, newFileName);
+		createResultFile(fileContent, newFileName);
 
 	}
 
-	public File createResultFile(String fileContent, String newFileName) {
+	public void createResultFile(String fileContent, String newFileName) {
 		if (fileContent == null) {
 			logger.error("incoming data cannot be null");
 			throw new NullPointerException("incoming data cannot be null");
@@ -33,7 +34,7 @@ public class ResultFileWriter {
 
 			resultFileWriter.write(fileContent.getBytes());
 
-			return resultFile;
+//			return resultFile;
 
 		} catch (Exception e) {
 			logger.error("something went wrong upon result file writing", e);

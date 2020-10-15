@@ -17,7 +17,7 @@ public interface PipeDao {
 
 	Integer[] getArrayOfUniqueStartPoints();
 
-	List<Pipe> getPipesWhichStartFromPoint(int point);
+	List<Pipe> getAllConnectedPipesTo(int point);
 
 	List<Point> getAllUniquePointsAsList();
 }

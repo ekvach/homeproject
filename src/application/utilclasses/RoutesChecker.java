@@ -33,7 +33,7 @@ public class RoutesChecker {
 	}
 
 	private void readFileAndFillRoutsList(File file) {
-		
+
 		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 
 			parsedLines = new ArrayList<Integer[]>();

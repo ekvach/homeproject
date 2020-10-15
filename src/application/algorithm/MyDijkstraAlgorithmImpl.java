@@ -7,7 +7,7 @@ import application.dao.interfaces.PipeDao;
 import application.utilclasses.Point;
 
 public class MyDijkstraAlgorithmImpl {
-	private Set<Point> points;
+	public Set<Point> points;
 	private int endPoint;
 	private PipeDao pipeDao;
 	private Point currentPoint;
@@ -33,6 +33,7 @@ public class MyDijkstraAlgorithmImpl {
 		}
 
 		String result = getResultLine();
+
 		return result;
 	}
 
@@ -47,8 +48,16 @@ public class MyDijkstraAlgorithmImpl {
 
 			int currentDistanceToTheNeighbor = currentPoint.getPipes().get(i).getLength();
 			relaxDistanceIfNeeded(currentDistanceToTheNeighbor);
+			
+			neighborOfCurrentPointName = currentPoint.getPipes().get(i).getStartPoint();
+			neighborOfCurrentPoint = getPointFromListByName(neighborOfCurrentPointName);
+
+			currentDistanceToTheNeighbor = currentPoint.getPipes().get(i).getLength();
+			relaxDistanceIfNeeded(currentDistanceToTheNeighbor);
 
 		}
+		
+		
 	}
 
 	private Point getNotVisitedNeighbor() {
@@ -95,6 +104,7 @@ public class MyDijkstraAlgorithmImpl {
 	}
 
 	private String checkRouteTo(Point point) {
+
 		if (point.getDistanceFromSource() == Integer.MAX_VALUE / 2) {
 			return "FALSE;";
 		} else {
@@ -132,4 +142,5 @@ public class MyDijkstraAlgorithmImpl {
 	public void setPipeDao(PipeDao pipeDao) {
 		this.pipeDao = pipeDao;
 	}
+
 }

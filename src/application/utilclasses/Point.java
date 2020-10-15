@@ -23,7 +23,7 @@ public class Point {
 
 	public void initializeConnectedPipes() {
 		PipeDao pipeDao = new PipeDaoImpl();
-		this.pipes = pipeDao.getPipesWhichStartFromPoint(this.pointName);
+		this.pipes = pipeDao.getAllConnectedPipesTo(this.pointName);
 	}
 
 	public int getPointName() {
